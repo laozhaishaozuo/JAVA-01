@@ -13,6 +13,6 @@ Week03 作业题目（周日）：
 
 1. （必做）实现过滤器。
 
-使用已有的框架实现一个简单的过滤器
+使用老师提供的框架实现一个带有简单过滤器的网关
 
 [网关2.0](https://github.com/laozhaishaozuo/JAVA-01/tree/main/Week_03/src/main/java/top/shaozuo/geektime/java01/week03/gateway02)
