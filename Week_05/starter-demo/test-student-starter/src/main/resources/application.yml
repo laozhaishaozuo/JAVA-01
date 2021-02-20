@@ -1,0 +1,10 @@
+starter:
+  demon:
+    students:
+      - id : 1
+        name : shaozuo
+      - id : 2
+        name : laozhai
+    student:
+      id : 3
+      name : lisi    
