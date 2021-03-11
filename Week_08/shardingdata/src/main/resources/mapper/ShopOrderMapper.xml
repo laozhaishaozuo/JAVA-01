@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.shaozuo.geektime.java01.week08.dao.ShopOrderMapper">
+  <select id="selectByBuyerId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from shop_order
+    where buyer_id = #{buyer_id,jdbcType=BIGINT}
+  </select>
+  
+</mapper>
