@@ -14,7 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan(basePackages = { "top.shaozuo.geektime.java01.week07.dao" })
+@MapperScan(basePackages = { "top.shaozuo.geektime.java01.week08.dao" })
 public class GeektimeWeek08Application implements ApplicationRunner {
 
     public static void main(String[] args) {

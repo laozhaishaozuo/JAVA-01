@@ -87,7 +87,7 @@ WHILE `@i`< IN_TIMES DO
   `total_amount` decimal(21,6) DEFAULT NULL COMMENT '总金额',
   `amount_payable` decimal(21,6) DEFAULT NULL COMMENT '订单应付金额',
   `amount_paid` decimal(21,6) DEFAULT NULL COMMENT '已付金额',
-  `finish_date` datetime DEFAULT NULL COMMENT '订单完成时间',a
+  `finish_date` datetime DEFAULT NULL COMMENT '订单完成时间',
   `order_time` datetime DEFAULT NULL COMMENT '下单时间',
   `order_message` varchar(255)  DEFAULT NULL COMMENT '订单留言',
   `create_date` datetime NOT NULL COMMENT '创建时间',
