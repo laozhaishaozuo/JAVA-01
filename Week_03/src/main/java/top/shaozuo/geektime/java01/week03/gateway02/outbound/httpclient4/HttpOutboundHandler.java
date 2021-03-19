@@ -27,6 +27,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpUtil;
 import top.shaozuo.geektime.java01.week03.gateway02.filter.HeaderHttpResponseFilter;
 import top.shaozuo.geektime.java01.week03.gateway02.filter.HttpRequestFilter;
@@ -119,7 +120,8 @@ public class HttpOutboundHandler {
                     Integer.parseInt(endpointResponse.getFirstHeader("Content-Length").getValue()));
 
             filter.filter(response);
-
+            System.out.println(response.headers().get(HttpHeaderNames.CONTENT_LENGTH));
+            System.out.println(response.headers().get("Content-Length"));
         } catch (Exception e) {
             e.printStackTrace();
             response = new DefaultFullHttpResponse(HTTP_1_1, NO_CONTENT);

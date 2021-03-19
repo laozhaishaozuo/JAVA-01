@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.4.3</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>top.shaozuo</groupId>
+	<artifactId>geektime-week09-account-demo</artifactId>
+	<version>${project.version}</version>
+	<name>${project.artifact}</name>
+	<description>${project.artifact}</description>
+	<properties>
+		<java.version>1.8</java.version>
+		<project.artifact>geektime-week09-account-demo</project.artifact>
+		<project.version>0.0.1-SNAPSHOT</project.version>
+		<shardingsphere.version>4.1.0</shardingsphere.version>
+		<hmily.version>2.1.2-SNAPSHOT</hmily.version>
+		<springfox.version>2.6.1</springfox.version>
+		<dubbo.version>2.7.0</dubbo.version>
+		<zookeeper.version>3.6.0</zookeeper.version>
+		<curator.version>5.1.0</curator.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-demo-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-annotation</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-core</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-dubbo</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-brpc</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-springcloud</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-grpc</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-spring-boot-starter-dubbo</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-spring-boot-starter-apache-dubbo</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-spring-boot-starter-brpc</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-spring-boot-starter-springcloud</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.dromara</groupId>
+				<artifactId>hmily-spring-boot-starter-sofa-rpc</artifactId>
+				<version>${hmily.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${springfox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${springfox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-bean-validators</artifactId>
+				<version>${springfox.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-mongodb</artifactId>
+				<version>${spring.data.mongodb.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.dubbo</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>${dubbo.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-client</artifactId>
+			<version>${curator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>${curator.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>${zookeeper.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<packaging>pom</packaging>
+	<modules>
+		<module>geektime-week09-account-exchange</module>
+        <module>geektime-week09-account-rmb</module>
+        <module>geektime-week09-account-usd</module>
+        <module>geektime-week09-account-common</module>
+	</modules>
+</project>
