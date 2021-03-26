@@ -3,7 +3,6 @@ package io.kimmking.rpcfx.client;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,97 +18,96 @@ import io.kimmking.rpcfx.exception.RpcfxException;
 
 public final class Rpcfx {
 
-    static {
-        ParserConfig.getGlobalInstance().addAccept("io.kimmking");
-    }
+	static {
+		ParserConfig.getGlobalInstance().addAccept("io.kimmking");
+	}
 
-    public static <T, filters> T createFromRegistry(final Class<T> serviceClass, final String zkUrl,
-            Router router, LoadBalancer loadBalance, Filter filter) {
+	public static <T, filters> T createFromRegistry(final Class<T> serviceClass, final String zkUrl,
+	        Router router, LoadBalancer loadBalance, Filter filter) {
 
-        // 加filte之一
+		// 加filte之一
 
-        // curator Provider list from zk
-        List<String> invokers = new ArrayList<>();
-        // 1. 简单：从zk拿到服务提供的列表
-        // 2. 挑战：监听zk的临时节点，根据事件更新这个list（注意，需要做个全局map保持每个服务的提供者List）
+		// curator Provider list from zk
+		List<String> invokers = new ArrayList<>();
+		// 1. 简单：从zk拿到服务提供的列表
+		// 2. 挑战：监听zk的临时节点，根据事件更新这个list（注意，需要做个全局map保持每个服务的提供者List）
 
-        List<String> urls = router.route(invokers);
+		List<String> urls = router.route(invokers);
 
-        String url = loadBalance.select(urls); // router, loadbalance
+		String url = loadBalance.select(urls); // router, loadbalance
 
-        return create(serviceClass, url, filter);
+		return create(serviceClass, url, filter);
 
-    }
+	}
 
-    public static <T> T create(final Class<T> serviceClass, final String url, Filter... filters) {
+	public static <T> T create(final Class<T> serviceClass, final String url, Filter... filters) {
 
-        // 0. 替换动态代理 -> AOP
-        return (T) Proxy.newProxyInstance(Rpcfx.class.getClassLoader(),
-                new Class[] { serviceClass },
-                new RpcfxInvocationHandler(serviceClass, url, filters));
+		// 0. 替换动态代理 -> 字节码
+		return ByteBuddyProxy.create(serviceClass, url, filters);
 
-    }
+	}
 
-    public static class RpcfxInvocationHandler implements InvocationHandler {
+	public static class RpcfxInvocationHandler implements InvocationHandler {
 
-        private RemoteClient remoteClient;
-        private final Class<?> serviceClass;
-        private final String url;
-        private final Filter[] filters;
+		private RemoteClient remoteClient;
+		private final Class<?> serviceClass;
+		private final String url;
+		private final Filter[] filters;
 
-        public <T> RpcfxInvocationHandler(Class<T> serviceClass, String url, Filter... filters) {
-            this(serviceClass, url, new NettyHttpRemoteClient(), filters);
-        }
+		public <T> RpcfxInvocationHandler(Class<T> serviceClass, String url, Filter... filters) {
+			this(serviceClass, url, new NettyHttpRemoteClient(), filters);
+		}
 
-        public <T> RpcfxInvocationHandler(Class<T> serviceClass, String url,
-                RemoteClient remoteClient, Filter... filters) {
-            this.serviceClass = serviceClass;
-            this.url = url;
-            this.filters = filters;
-            this.remoteClient = remoteClient;
-        }
+		public <T> RpcfxInvocationHandler(Class<T> serviceClass, String url,
+		        RemoteClient remoteClient, Filter... filters) {
+			this.serviceClass = serviceClass;
+			this.url = url;
+			this.filters = filters;
+			this.remoteClient = remoteClient;
+		}
 
-        // 可以尝试，自己去写对象序列化，二进制还是文本的，，，rpcfx是xml自定义序列化、反序列化，json: code.google.com/p/rpcfx
-        // int byte char float double long bool
-        // [], data class
+		// 可以尝试，自己去写对象序列化，二进制还是文本的，，，
+		// rpcfx是xml自定义序列化、反序列化，json: code.google.com/p/rpcfx
+		// int byte char float double long bool
+		// [], data class
 
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
 
-            // 加filter地方之二
-            // mock == true, new Student("hubao");
+			// 加filter地方之二
+			// mock == true, new Student("hubao");
 
-            RpcfxRequest request = new RpcfxRequest();
-            request.setServiceClass(this.serviceClass.getName());
-            request.setMethod(method.getName());
-            request.setParams(params);
+			RpcfxRequest request = new RpcfxRequest();
+			request.setServiceClass(this.serviceClass.getName());
+			request.setMethod(method.getName());
+			request.setParams(params);
 
-            if (null != filters) {
-                for (Filter filter : filters) {
-                    if (!filter.filter(request)) {
-                        return null;
-                    }
-                }
-            }
+			if (null != filters) {
+				for (Filter filter : filters) {
+					if (!filter.filter(request)) {
+						return null;
+					}
+				}
+			}
 
-            RpcfxResponse response = post(request, url);
+			RpcfxResponse response = post(request, url);
 
-            // 加filter地方之三
-            // Student.setTeacher("cuijing");
+			// 加filter地方之三
+			// Student.setTeacher("cuijing");
 
-            // 这里判断response.status，处理异常
-            // 考虑封装一个全局的RpcfxException
-            if (!response.isStatus()) {//服务端异常
-                RpcfxException rpcfxException = (RpcfxException) response.getException();
-                System.out.println(rpcfxException.getMessage());
-                throw rpcfxException;
-            }
+			// 这里判断response.status，处理异常
+			// 考虑封装一个全局的RpcfxException
+			if (!response.isStatus()) {// 服务端异常
+				RpcfxException rpcfxException = (RpcfxException) response.getException();
+				System.out.println(rpcfxException.getMessage());
+				throw rpcfxException;
+			}
 
-            return JSON.parse(response.getResult().toString());
-        }
+			return JSON.parse(response.getResult().toString());
+		}
 
-        private RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
-            return remoteClient.post(req, url);
-        }
-    }
+		private RpcfxResponse post(RpcfxRequest req, String url) throws IOException {
+			return remoteClient.post(req, url);
+		}
+	}
 }
