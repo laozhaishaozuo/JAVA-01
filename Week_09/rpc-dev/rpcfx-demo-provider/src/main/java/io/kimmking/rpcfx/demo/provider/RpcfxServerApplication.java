@@ -19,44 +19,49 @@ import io.kimmking.rpcfx.server.RpcfxInvoker;
 @RestController
 public class RpcfxServerApplication {
 
-    public static void main(String[] args) throws Exception {
-        SpringApplication.run(RpcfxServerApplication.class, args);
-    }
+	public static void main(String[] args) throws Exception {
+		SpringApplication.run(RpcfxServerApplication.class, args);
+	}
 
-    @Autowired
-    RpcfxInvoker invoker;
+	@Autowired
+	RpcfxInvoker invoker;
 
-    @PostMapping("/")
-    public RpcfxResponse invoke(@RequestBody RpcfxRequest request) {
-        return invoker.invoke(request);
-    }
+	@PostMapping(value = "/")
+	public RpcfxResponse invoke(@RequestBody RpcfxRequest request) {
+		return invoker.invoke(request);
+	}
 
-    @Bean
-    public RpcfxInvoker createInvoker(@Autowired RpcfxResolver resolver) {
-        return new RpcfxInvoker(resolver);
-    }
+	@PostMapping(value = "/xstream")
+	public RpcfxResponse invokeXstream(@RequestBody RpcfxRequest request) {
+		return invoker.invokeXml(request);
+	}
 
-    @Bean
-    public RpcfxResolver createResolver() {
-        ReflectResolver resolver = new ReflectResolver();
-        resolver.add(UserService.class.getName(), UserServiceImpl.class);
-        resolver.add(OrderService.class.getName(), OrderServiceImpl.class);
-        return resolver;
-    }
+	@Bean
+	public RpcfxInvoker createInvoker(@Autowired RpcfxResolver resolver) {
+		return new RpcfxInvoker(resolver);
+	}
 
-    // 能否去掉name
-    //
+	@Bean
+	public RpcfxResolver createResolver() {
+		ReflectResolver resolver = new ReflectResolver();
+		resolver.add(UserService.class.getName(), UserServiceImpl.class);
+		resolver.add(OrderService.class.getName(), OrderServiceImpl.class);
+		return resolver;
+	}
 
-    // annotation
-    /*
-    @Bean(name = "io.kimmking.rpcfx.demo.api.UserService")
-    public UserService createUserService() {
-        return new UserServiceImpl();
-    }
-    
-    @Bean(name = "io.kimmking.rpcfx.demo.api.OrderService")
-    public OrderService createOrderService() {
-        return new OrderServiceImpl();
-    }*/
+	// 能否去掉name
+	//
+
+	// annotation
+	/*
+	@Bean(name = "io.kimmking.rpcfx.demo.api.UserService")
+	public UserService createUserService() {
+	    return new UserServiceImpl();
+	}
+	
+	@Bean(name = "io.kimmking.rpcfx.demo.api.OrderService")
+	public OrderService createOrderService() {
+	    return new OrderServiceImpl();
+	}*/
 
 }

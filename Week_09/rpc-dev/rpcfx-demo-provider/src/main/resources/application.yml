@@ -4,3 +4,4 @@ server:
   profiles:
     active: true
 
+debug: true

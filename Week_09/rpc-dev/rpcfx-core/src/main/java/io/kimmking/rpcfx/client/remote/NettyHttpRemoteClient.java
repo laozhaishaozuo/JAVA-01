@@ -1,4 +1,4 @@
-package io.kimmking.rpcfx.client;
+package io.kimmking.rpcfx.client.remote;
 
 import java.io.IOException;
 import java.net.URI;
@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import io.kimmking.rpcfx.client.RemoteClient;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -1,9 +1,10 @@
-package io.kimmking.rpcfx.client;
+package io.kimmking.rpcfx.client.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 
 import io.kimmking.rpcfx.api.Filter;
-import io.kimmking.rpcfx.client.Rpcfx.RpcfxInvocationHandler;
+import io.kimmking.rpcfx.client.Rpcfx;
+import io.kimmking.rpcfx.client.RpcfxXmlInvocationHandler;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
@@ -19,7 +20,7 @@ public class ByteBuddyProxy {
 		DynamicType.Unloaded<?> dynamicType = new ByteBuddy().subclass(Object.class)
 		        .name(serviceClass.getCanonicalName() + "Impl").implement(serviceClass)
 		        .intercept(InvocationHandlerAdapter
-		                .of(new RpcfxInvocationHandler(serviceClass, url, filters)))
+		                .of(new RpcfxXmlInvocationHandler(serviceClass, url, filters)))
 		        .make();
 		//System.out.println(dynamicType.getTypeDescription());
 		try {

@@ -1,9 +1,10 @@
-package io.kimmking.rpcfx.client;
+package io.kimmking.rpcfx.client.proxy;
 
 import java.lang.reflect.Proxy;
 
 import io.kimmking.rpcfx.api.Filter;
-import io.kimmking.rpcfx.client.Rpcfx.RpcfxInvocationHandler;
+import io.kimmking.rpcfx.client.Rpcfx;
+import io.kimmking.rpcfx.client.RpcfxXmlInvocationHandler;
 
 public class JdkProxy {
 
@@ -12,7 +13,7 @@ public class JdkProxy {
 		// 0. 替换动态代理 -> 字节码
 		return (T) Proxy.newProxyInstance(Rpcfx.class.getClassLoader(),
 		        new Class[] { serviceClass },
-		        new RpcfxInvocationHandler(serviceClass, url, filters));
+		        new RpcfxXmlInvocationHandler(serviceClass, url, filters));
 
 	}
 }

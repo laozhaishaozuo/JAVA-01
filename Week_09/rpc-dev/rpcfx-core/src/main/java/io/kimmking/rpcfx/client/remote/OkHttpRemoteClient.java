@@ -1,4 +1,4 @@
-package io.kimmking.rpcfx.client;
+package io.kimmking.rpcfx.client.remote;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 
 import io.kimmking.rpcfx.api.RpcfxRequest;
 import io.kimmking.rpcfx.api.RpcfxResponse;
+import io.kimmking.rpcfx.client.RemoteClient;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
