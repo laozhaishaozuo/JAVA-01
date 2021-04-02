@@ -45,7 +45,7 @@ public class RedisDistributedLock {
 
 			return !StringUtils.hasLength(result);
 		} catch (Exception e) {
-			logger.error("set redis occured an exception", e);
+			logger.error("获取锁失败", e);
 		}
 
 		return false;
@@ -57,7 +57,6 @@ public class RedisDistributedLock {
 	* @param value
 	* @return
 	*
-	* @since JDK 1.8
 	*/
 	public boolean unLock(String key, String value) {
 		List<String> keys = new ArrayList<>();
@@ -65,8 +64,7 @@ public class RedisDistributedLock {
 		List<String> args = new ArrayList<>();
 		args.add(value);
 		try {
-			// 使用lua脚本删除redis中匹配value的key，可以避免由于方法执行时间过长而redis锁自动过期失效的时候误删其他线程的锁
-			// spring自带的执行脚本方法中，集群模式直接抛出不支持执行脚本的异常，所以只能拿到原redis的connection来执行脚本
+			// 使用lua脚本删除redis中匹配value的key
 			RedisCallback<Long> callback = (connection) -> {
 				Object nativeConnection = connection.getNativeConnection();
 				if (nativeConnection instanceof Jedis) {// 单机模式
@@ -74,7 +72,6 @@ public class RedisDistributedLock {
 				} else {
 					// 模式匹配不上
 				}
-
 				return 0L;
 			};
 
@@ -82,7 +79,7 @@ public class RedisDistributedLock {
 
 			return result != null && result > 0;
 		} catch (Exception e) {
-			logger.error("release lock occured an exception", e);
+			logger.error("释放锁失败", e);
 		} finally {
 
 		}
