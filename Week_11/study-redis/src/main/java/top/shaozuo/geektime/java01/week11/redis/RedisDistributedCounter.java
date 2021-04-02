@@ -43,4 +43,8 @@ public class RedisDistributedCounter {
 	public String getTotalStr() {
 		return redisTemplate.opsForValue().get(counterKey);
 	}
+
+	public void clear() {
+		redisTemplate.delete(counterKey);
+	}
 }

@@ -3,6 +3,7 @@ package top.shaozuo.geektime.java01.week11.redis;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +24,14 @@ public class IndexController {
 	@Autowired
 	RedisDistributedLock redisLock;
 
-	int count = 0;
 
-	@RequestMapping("/index")
+	@RequestMapping("/lock")
 	@ResponseBody
-	public String index() throws InterruptedException {
+	public String lock() throws InterruptedException {
 
 		int clientcount = 1000;
 		CountDownLatch countDownLatch = new CountDownLatch(clientcount);
-
+		AtomicInteger count = new AtomicInteger();
 		ExecutorService executorService = Executors.newFixedThreadPool(clientcount);
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < clientcount; i++) {
@@ -39,7 +39,7 @@ public class IndexController {
 			executorService.execute(() -> {
 				try {
 					if (redisLock.lock("lockKey", index, 1000L)) {
-						count++;
+						count.incrementAndGet();
 					}
 				} finally {
 					redisLock.unLock("lockKey", index);
@@ -49,8 +49,8 @@ public class IndexController {
 		}
 		countDownLatch.await();
 		long end = System.currentTimeMillis();
-		logger.info("执行线程数:{},总耗时:{},count数为:{}", clientcount, end - start, count);
-		return "Hello";
+		logger.info("执行线程数:{},总耗时:{},执行成功数为:{}", clientcount, end - start, count.get());
+		return String.format("执行线程数:%d,总耗时:%d,执行成功数为:%d", clientcount, end - start, count.get());
 	}
 
 	@RequestMapping("/order")
@@ -75,6 +75,7 @@ public class IndexController {
 			});
 		}
 		countDownLatch.await();
-		return counter.getTotalStr();
+		counter.clear();
+		return "下单成功";
 	}
 }
