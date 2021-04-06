@@ -15,11 +15,24 @@ public class GlobalRedisId {
 	 * @return
 	 */
 	public static String genId(String bizKey) {
+		return genId(bizKey, 0);
+	}
+
+	/**
+	 * 生成 bizKey:yyyyMMddHHmmss:00000 格式的key
+	 * @param bizKey 业务key
+	 * @param expireSeconds 过期时间秒 如果expireSeconds<=0 将被忽略
+	 * @return
+	 */
+	public static String genId(String bizKey, int expireSeconds) {
 		Jedis jedis = null;
 		String keySuffix = genPrefix();
 		String key = StrUtil.format("{}:id:{}", bizKey, keySuffix);
 		try {
 			jedis = JedisTools.getResource();
+			if (!jedis.exists(key).booleanValue()) {
+				JedisTools.set(key, "0", expireSeconds);
+			}
 			Long result = jedis.incr(key);
 			String suffix = String.format("%05d", result);
 			return keySuffix + suffix;
