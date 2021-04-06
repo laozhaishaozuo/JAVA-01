@@ -1,5 +1,8 @@
 package top.shaozuo.geektime.java01.week11.redis;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +11,8 @@ import cn.hutool.setting.dialect.Props;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.jedis.params.SetParams;
 
@@ -127,5 +132,37 @@ public class JedisTools {
 			close(jedis);
 		}
 		return 0L;
+	}
+
+	public static Long del(String... key) {
+		Jedis jedis = null;
+		try {
+			jedis = getResource();
+			return jedis.del(key);
+		} catch (Exception e) {
+			logger.warn("del {} 失败，原因 ：{}", key, e.getMessage());
+		} finally {
+			close(jedis);
+		}
+		return 0L;
+	}
+
+	public static Set<String> like(String pattern) {
+		Jedis jedis = null;
+		ScanParams params = new ScanParams().match(pattern);
+		try {
+			jedis = JedisTools.getResource();
+			ScanResult<String> result = jedis.scan(ScanParams.SCAN_POINTER_START, params);
+			String cursor = result.getCursor();
+			Set<String> keys = new HashSet<>();
+			do {
+				keys.addAll(result.getResult());
+				result = jedis.scan(cursor, params);
+				cursor = result.getCursor();
+			} while (!"0".equals(cursor));// 第一次就可能返回"0"
+			return keys;
+		} finally {
+			close(jedis);
+		}
 	}
 }
