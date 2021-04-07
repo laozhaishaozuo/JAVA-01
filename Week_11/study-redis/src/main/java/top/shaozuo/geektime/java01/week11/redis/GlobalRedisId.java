@@ -30,10 +30,10 @@ public class GlobalRedisId {
 		String key = StrUtil.format("{}:id:{}", bizKey, keySuffix);
 		try {
 			jedis = JedisTools.getResource();
-			if (!jedis.exists(key).booleanValue()) {
-				JedisTools.set(key, "0", expireSeconds);
-			}
 			Long result = jedis.incr(key);
+			if (1L == result && expireSeconds > 0) {
+				jedis.expire(key, expireSeconds);
+			}
 			String suffix = String.format("%05d", result);
 			return keySuffix + suffix;
 		} finally {
