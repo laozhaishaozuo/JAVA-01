@@ -2,6 +2,12 @@
 
 
 ### Week09 作业题目（周三）：
+2.（选做）实现简单的 WebService-Axis2/CXF 远程调用 demo。
+
+ 	使用CXF实现WebService，使用 SpringBoot 作为脚手架
+
+ 	[代码地址](https://github.com/laozhaishaozuo/JAVA-01/tree/main/Week_09/simple-webservice)
+
 3.（必做）改造自定义 RPC 的程序，提交到 GitHub：
 
 1. 尝试将服务端写死查找接口实现类变成泛型和反射；
