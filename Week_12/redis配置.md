@@ -89,16 +89,35 @@ SLAVEOF 172.17.0.4 6379
 
 查看redis-master主从信息
 
-![image-20210412085607378](./resources/replication-master-info.png)
+```
+127.0.0.1:6379> info replication
+# Replication
+role:master
+connected_slaves:2
+slave0:ip=172.17.0.2,port=6379,state=online,offset=422,lag=0
+slave1:ip=172.17.0.3,port=6379,state=online,offset=422,lag=0
+master_failover_state:no-failover
+master_replid:b7424ad261f29667e158329786f74545a936d6dc
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:422
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:422
+
+```
+
+
 
 ### 测试主从
 
 在主服务器中执行命令 `set test "master"`
 
-![image-20210412084644591](./resources/replication-test-master.png)
+![](./resources/replication-test-master.png)
 
 分别在从服务器中查看`get test`
 
-![image-20210412084935149](./resources/replication-test-slave1.png)
+![](./resources/replication-test-slave1.png)
 
 ![](./resources/replication-test-slave2.png)
