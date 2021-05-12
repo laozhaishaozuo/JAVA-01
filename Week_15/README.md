@@ -16,6 +16,8 @@ JVM（Java Virtual Machine）是Java执行的基础，是Java能够实现跨平�
 5. JMM（Java内存模型） 规范Java的内存访问，屏蔽各种底层对内存访问的差异，是多线程并发编程的基础
 6. 一些监控手段 提供对虚拟机一些指标进行监控的工具
 
+[JVM学习](./JVM学习.xmind)
+
 ### NIO
 
 提到IO就不能说不提到那几种网络IO模型：
